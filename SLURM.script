@@ -1,34 +1,43 @@
 #!/bin/bash
-# Job name:
+
 #SBATCH --job-name=dreamerv3
-#
-# Account name: mitarbeiter/student/extern
 #SBATCH --account=mitarbeiter
-#
-# Partition: see in sinfo
 #SBATCH --partition=a30
-#
-# Request one node:
 #SBATCH --nodes=1
-#
-# Specify one task (one for each GPU):
 #SBATCH --ntasks-per-node=1
-#
-# Minimum number of processors for single task needed for use case:
-#SBATCH --cpus-per-task=1
-#
-# Minimum amount of memory required per node:
-#SBATCH --mem=8G
-#
-# Number of GPUs, in the format "gpu:[1-4]" or "gpu:a30:[1-4]":
+#SBATCH --cpus-per-task=4          # Increased for better performance
+#SBATCH --mem=16G                  # Increased for larger models
 #SBATCH --gres=gpu:a30:1
-#
-# Wall clock limit:
-#SBATCH --time=00:00:30
-#
-# Specify a Quality of service ([partition]-cpu or [partition]-gpu)
+#SBATCH --time=24:00:00           # Increased for longer training
 #SBATCH --qos=a30-gpu
-#
-## Command(s) to run (example):
-install.sh
-train.sh
+#SBATCH --output=slurm-%j.out     # Add output logging
+#SBATCH --error=slurm-%j.err      # Add error logging
+
+# Error handling
+set -e
+trap 'echo "Job failed at line $LINENO"' ERR
+
+# Setup environment
+echo "Job started at $(date)"
+echo "Running on node: $HOSTNAME"
+nvidia-smi                        # Log GPU info
+
+# Create log directory
+LOGDIR="logs/run_$(date +%Y%m%d_%H%M%S)"
+mkdir -p $LOGDIR
+
+# Run installation
+./install.sh 2>&1 | tee "$LOGDIR/install.log" || {
+    echo "Installation failed"
+    exit 1
+}
+
+# Run training
+./train.sh 2>&1 | tee "$LOGDIR/train.log" || {
+    echo "Training failed"
+    exit 1
+}
+
+# Cleanup and summary
+echo "Job completed at $(date)"
+echo "Logs saved in $LOGDIR"
