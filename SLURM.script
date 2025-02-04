@@ -30,4 +30,5 @@
 #SBATCH --qos=a30-gpu
 #
 ## Command(s) to run (example):
+install.sh
 train.sh
