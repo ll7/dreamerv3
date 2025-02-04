@@ -1,0 +1,33 @@
+#!/bin/bash
+# Job name:
+#SBATCH --job-name=dreamerv3
+#
+# Account name: mitarbeiter/student/extern
+#SBATCH --account=mitarbeiter
+#
+# Partition: see in sinfo
+#SBATCH --partition=a30
+#
+# Request one node:
+#SBATCH --nodes=1
+#
+# Specify one task (one for each GPU):
+#SBATCH --ntasks-per-node=1
+#
+# Minimum number of processors for single task needed for use case:
+#SBATCH --cpus-per-task=1
+#
+# Minimum amount of memory required per node:
+#SBATCH --mem=8G
+#
+# Number of GPUs, in the format "gpu:[1-4]" or "gpu:a30:[1-4]":
+#SBATCH --gres=gpu:a30:1
+#
+# Wall clock limit:
+#SBATCH --time=00:00:30
+#
+# Specify a Quality of service ([partition]-cpu or [partition]-gpu)
+#SBATCH --qos=a30-gpu
+#
+## Command(s) to run (example):
+train.sh
