@@ -5,8 +5,8 @@
 #SBATCH --partition=a30
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=4          # Increased for better performance
-#SBATCH --mem=16G                  # Increased for larger models
+#SBATCH --cpus-per-task=24          # Increased for better performance
+#SBATCH --mem=128G                  # Increased for larger models
 #SBATCH --gres=gpu:a30:1
 #SBATCH --time=24:00:00           # Increased for longer training
 #SBATCH --qos=a30-gpu
